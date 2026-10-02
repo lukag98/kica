@@ -1,0 +1,1927 @@
+<!doctype html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Za Kicu ♥</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ecebdf;
+        --frame: #2b2b2b;
+        --screen: #fbf2fb;
+        --wine: #7a1030;
+        --ink: #1c1c1c;
+        --btn: #e4e2da;
+        --pink: #ff3d8b;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        background: var(--bg);
+        font-family: "Pixelify Sans", monospace;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        overflow-x: hidden;
+      }
+
+      /* Tablet frame */
+      .tablet {
+        position: relative;
+        width: min(760px, 100%);
+        background: var(--frame);
+        border-radius: 22px;
+        padding: 14px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        z-index: 1;
+      }
+      .screen {
+        background: var(--screen);
+        border-radius: 10px;
+        min-height: min(520px, 80vh);
+        padding: 32px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 22px;
+        overflow: hidden;
+      }
+
+      .view {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+        width: 100%;
+        animation: pop 0.35s ease;
+      }
+      .view.active {
+        display: flex;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      h1 {
+        font-size: clamp(42px, 9vw, 76px);
+        color: var(--wine);
+        letter-spacing: 3px;
+        line-height: 1;
+      }
+      h2 {
+        font-size: clamp(20px, 4vw, 30px);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        line-height: 1.35;
+      }
+      .small {
+        font-size: clamp(13px, 2.4vw, 16px);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--wine);
+      }
+
+      .btn {
+        font-family: inherit;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        background: var(--btn);
+        color: var(--ink);
+        border: 3px solid var(--ink);
+        padding: 10px 28px;
+        cursor: pointer;
+        box-shadow: 4px 4px 0 var(--ink);
+        transition:
+          transform 0.08s,
+          box-shadow 0.08s;
+      }
+      .btn:hover {
+        background: #fff;
+      }
+      .btn:active {
+        transform: translate(4px, 4px);
+        box-shadow: 0 0 0 var(--ink);
+      }
+      .btn.ghost {
+        font-size: 12px;
+        padding: 6px 14px;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      /* Pixel art */
+      .hearts {
+        display: flex;
+        gap: 8px;
+      }
+      .pix {
+        image-rendering: pixelated;
+        display: block;
+      }
+      .heart {
+        width: clamp(44px, 9vw, 64px);
+      }
+      .trophy {
+        width: clamp(90px, 18vw, 130px);
+        animation: bob 1.6s ease-in-out infinite;
+      }
+      @keyframes bob {
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      .heart.fill-in {
+        animation: beat 0.6s ease;
+      }
+      @keyframes beat {
+        30% {
+          transform: scale(1.3);
+        }
+        60% {
+          transform: scale(0.9);
+        }
+      }
+
+      /* Puzzle */
+      .puzzle-wrap {
+        width: 100%;
+        max-width: 620px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+      .puzzle-bar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .board {
+        width: 100%;
+        aspect-ratio: 1600 / 1080;
+        display: grid;
+        gap: 3px;
+        background: var(--ink);
+        border: 3px solid var(--ink);
+        position: relative;
+        touch-action: none;
+      }
+      .board.solved {
+        gap: 0;
+        transition: gap 0.4s;
+      }
+      .piece {
+        background-image: url("puzla-1.jpeg");
+        background-repeat: no-repeat;
+        cursor: pointer;
+        transition:
+          outline-color 0.15s,
+          filter 0.15s;
+        outline: 3px solid transparent;
+        outline-offset: -3px;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .piece:hover {
+        filter: brightness(1.08);
+      }
+      .piece.selected {
+        outline-color: var(--pink);
+        filter: brightness(1.15);
+      }
+      .piece.correct-flash {
+        animation: flash 0.5s;
+      }
+      @keyframes flash {
+        50% {
+          filter: brightness(1.5);
+        }
+      }
+      .preview {
+        position: absolute;
+        inset: 0;
+        background: url("puzla-1.jpeg") center/cover;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+      .preview.show {
+        opacity: 1;
+      }
+      .timer {
+        font-size: 20px;
+        font-weight: 700;
+        min-width: 70px;
+      }
+      .timer.low {
+        color: #e8131b;
+        animation: blink 0.5s steps(2) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0.3;
+        }
+      }
+      .heart.lose {
+        animation: lose 0.8s ease;
+      }
+      @keyframes lose {
+        25% {
+          transform: translateX(-6px) rotate(-8deg);
+        }
+        50% {
+          transform: translateX(6px) rotate(8deg);
+        }
+        75% {
+          transform: scale(0.8);
+        }
+      }
+      .puzzle-wrap .hearts .heart,
+      .quiz-wrap .hearts .heart {
+        width: 30px;
+      }
+      .kisses {
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
+      .kisses b {
+        color: var(--pink);
+        font-size: 24px;
+      }
+      .kiss-gain {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--pink);
+        animation: gain 1s ease;
+      }
+      @keyframes gain {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.6);
+        }
+        60% {
+          transform: scale(1.25);
+        }
+      }
+      /* Maze */
+      .maze-wrap {
+        width: 100%;
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+      .maze-wrap .hearts .heart {
+        width: 30px;
+      }
+      .maze {
+        width: min(100%, 460px, 58vh);
+        aspect-ratio: 1;
+        background: #fff;
+        border: 3px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+        touch-action: none;
+        display: block;
+      }
+      .dpad {
+        display: grid;
+        grid-template-columns: repeat(3, 48px);
+        grid-template-rows: repeat(2, 48px);
+        gap: 6px;
+      }
+      .dpad .btn {
+        padding: 0;
+        font-size: 18px;
+        letter-spacing: 0;
+        box-shadow: 3px 3px 0 var(--ink);
+        touch-action: manipulation;
+      }
+      .dpad [data-d="up"] {
+        grid-column: 2;
+      }
+      .dpad [data-d="left"] {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      .dpad [data-d="down"] {
+        grid-column: 2;
+        grid-row: 2;
+      }
+      .dpad [data-d="right"] {
+        grid-column: 3;
+        grid-row: 2;
+      }
+
+      /* Catch */
+      .catch-wrap {
+        width: 100%;
+        max-width: 620px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+      .catch-wrap .hearts .heart {
+        width: 30px;
+      }
+      .catch-row {
+        width: 100%;
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+        justify-content: center;
+      }
+      .catch-field {
+        flex: 1 1 60%;
+        max-width: 380px;
+        aspect-ratio: 3 / 4;
+        max-height: 60vh;
+        background: #fff;
+        border: 3px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+        touch-action: none;
+        display: block;
+        cursor: none;
+      }
+      .catch-side {
+        flex: 0 1 38%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .catch-side img {
+        width: 100%;
+        max-height: 50vh;
+        object-fit: contain;
+      }
+      .catch-side img.swap {
+        animation: swap 0.6s ease;
+      }
+      @keyframes swap {
+        0% {
+          transform: scale(0.6) rotate(-8deg);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.12) rotate(4deg);
+        }
+      }
+      .catch-count {
+        font-size: 18px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .catch-miss {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .catch-miss b {
+        color: #e8131b;
+      }
+      .catch-miss.hit {
+        animation: shake 0.4s;
+      }
+      .catch-count b {
+        color: var(--pink);
+      }
+
+      /* Memory */
+      .memory-wrap {
+        width: 100%;
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+      .memory-wrap .hearts .heart {
+        width: 30px;
+      }
+      .memory-grid {
+        width: min(100%, 440px, 45vh);
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .card {
+        aspect-ratio: 3 / 4;
+        perspective: 600px;
+        cursor: pointer;
+      }
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.45s;
+        transform-style: preserve-3d;
+      }
+      .card.open .card-inner {
+        transform: rotateY(180deg);
+      }
+      .card-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border: 3px solid var(--ink);
+        box-shadow: 3px 3px 0 var(--ink);
+        overflow: hidden;
+      }
+      .card-back {
+        background: var(--pink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-back .pix {
+        width: 55%;
+      }
+      .card-front {
+        transform: rotateY(180deg);
+        background: #fff;
+      }
+      .card-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .card.matched .card-face {
+        border-color: #2fa84f;
+      }
+      .card.matched {
+        cursor: default;
+        animation: beat 0.6s ease;
+      }
+
+      /* Quiz */
+      .quiz-wrap {
+        width: 100%;
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+      }
+      .quiz-photo {
+        width: auto;
+        max-width: min(100%, 300px);
+        max-height: 40vh;
+        border: 3px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+      .blur-box {
+        overflow: hidden;
+        border: 3px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+        line-height: 0;
+      }
+      .blur-box img {
+        display: block;
+        max-width: 100%;
+        max-height: 45vh;
+        transform: scale(1.08);
+        transition:
+          filter 1.2s ease,
+          transform 1.2s ease;
+      }
+      .blur-box img.clear {
+        filter: none !important;
+        transform: none;
+      }
+      .quiz-video {
+        width: 100%;
+        max-height: 45vh;
+        background: #000;
+        border: 3px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+      .quiz-text {
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--wine);
+        max-width: 480px;
+      }
+      .answers {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .answers .btn {
+        width: 100%;
+        text-align: left;
+        letter-spacing: 1px;
+      }
+      .answers .btn.right {
+        background: #7ee07e;
+      }
+      .answers .btn.wrong {
+        background: #ff7a7a;
+        animation: shake 0.4s;
+      }
+      .answers .btn:disabled {
+        cursor: default;
+      }
+      @keyframes shake {
+        25% {
+          transform: translateX(-6px);
+        }
+        75% {
+          transform: translateX(6px);
+        }
+      }
+      .hint {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.7;
+      }
+
+      .final-title {
+        font-size: clamp(30px, 6.5vw, 54px);
+        line-height: 1.15;
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      .slideshow {
+        position: relative;
+        width: 100%;
+        max-width: 520px;
+        height: min(55vh, 460px);
+        background: #fff;
+        border: 3px solid var(--ink);
+        box-shadow: 6px 6px 0 var(--ink);
+        overflow: hidden;
+      }
+      .slideshow img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transform: scale(1.04);
+        transition:
+          opacity 1s ease,
+          transform 3.5s ease;
+      }
+      .slideshow img.active {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Runaway + sneaky claim button */
+      .runaway {
+        z-index: 50;
+        transition:
+          left 0.25s ease,
+          top 0.25s ease;
+      }
+      .runaway.fleeing {
+        position: fixed;
+      }
+      .sneaky {
+        position: absolute;
+        right: 4px;
+        bottom: 2px;
+        display: none;
+        font-family: inherit;
+        font-size: 9px;
+        color: #8a8a8a;
+        background: none;
+        border: none;
+        padding: 2px 4px;
+        cursor: pointer;
+        opacity: 0.6;
+      }
+      .sneaky:hover {
+        opacity: 1;
+        color: #fff;
+      }
+      .sneaky.show {
+        display: block;
+      }
+      .claimed {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(251, 242, 251, 0.94);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        text-align: center;
+        padding: 16px;
+        animation: pop 0.4s ease;
+      }
+      .claimed .big {
+        font-size: clamp(60px, 18vw, 120px);
+        animation: pulse 1s ease-in-out infinite;
+      }
+
+      /* Floating hearts background */
+      .floaty {
+        position: fixed;
+        bottom: -40px;
+        font-size: 22px;
+        color: var(--pink);
+        opacity: 0.55;
+        pointer-events: none;
+        animation: rise linear forwards;
+        z-index: 0;
+      }
+      @keyframes rise {
+        to {
+          transform: translateY(-110vh) rotate(25deg);
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .tablet {
+          padding: 9px;
+          border-radius: 16px;
+        }
+        .screen {
+          padding: 24px 12px;
+        }
+        .btn {
+          font-size: 14px;
+          padding: 9px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tablet" id="tablet">
+      <div class="screen">
+        <!-- Start -->
+        <section class="view active" id="v-start">
+          <h1>ĆAO, LEPKOO!</h1>
+          <p class="small">
+            Napravio sam nešto za tebe jer je ovo prvi put da nismo zajedno.
+          </p>
+          <button class="btn" id="btn-start">Start</button>
+        </section>
+
+        <!-- Level intro -->
+        <section class="view" id="v-intro">
+          <div class="hearts" id="intro-hearts"></div>
+          <h2 id="intro-title"></h2>
+          <p class="small" id="intro-text"></p>
+          <button class="btn" id="btn-play">Igraj</button>
+        </section>
+
+        <!-- Game -->
+        <section class="view" id="v-game">
+          <div
+            id="game-root"
+            style="width: 100%; display: flex; justify-content: center"
+          ></div>
+        </section>
+
+        <!-- Level complete -->
+        <section class="view" id="v-done">
+          <div class="hearts" id="done-hearts"></div>
+          <h2 id="done-title"></h2>
+          <p class="kiss-gain">+10 💋</p>
+          <p class="kisses" id="done-kisses"></p>
+          <button class="btn" id="btn-next">Otključaj sledeći nivo</button>
+        </section>
+
+        <!-- Time's up -->
+        <section class="view" id="v-lose">
+          <div class="hearts" id="lose-hearts"></div>
+          <h2 id="lose-title"></h2>
+          <p class="small" id="lose-text"></p>
+          <button class="btn" id="btn-retry"></button>
+        </section>
+
+        <!-- Final -->
+        <section class="view" id="v-final">
+          <div class="hearts" id="final-hearts"></div>
+          <p class="small">Znao sam da ćeš uspeti.</p>
+          <div id="trophy"></div>
+          <p class="kisses" id="final-kisses"></p>
+          <button class="btn" id="btn-prize">Preuzmi nagradu</button>
+        </section>
+
+        <!-- Prize -->
+        <section class="view" id="v-prize">
+          <h1 class="final-title">Volim te Kico,<br />srećna godišnjica! ♥</h1>
+          <div class="slideshow" id="slideshow"></div>
+          <p class="small" id="prize-text"></p>
+          <button class="btn runaway" id="btn-runaway" tabindex="-1">
+            Preuzmi poljupce 💋
+          </button>
+          <p class="hint" id="runaway-hint">&nbsp;</p>
+          <button class="btn ghost" id="btn-restart">Igraj ponovo</button>
+        </section>
+      </div>
+      <button class="sneaky" id="btn-sneaky" aria-label="Preuzmi">preuzmi</button>
+    </div>
+
+    <script>
+      /* ---------- Pixel art ---------- */
+      const PALETTE = {
+        o: "#1c1c1c",
+        r: "#e8131b",
+        w: "#ffffff",
+        p: "#ff8a8a",
+        y: "#f5c518",
+        l: "#fff3a0",
+        d: "#b8860b",
+        e: "#fdf7fb",
+      };
+      function pixelSVG(rows, cls) {
+        const h = rows.length,
+          w = rows[0].length;
+        let rects = "";
+        rows.forEach((row, y) =>
+          [...row].forEach((c, x) => {
+            if (PALETTE[c])
+              rects += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PALETTE[c]}"/>`;
+          }),
+        );
+        return `<svg class="pix ${cls}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges">${rects}</svg>`;
+      }
+      const HEART_FULL = [
+        "..ooo...ooo..",
+        ".orrro.orrro.",
+        "orwwrrorrrrro",
+        "orwrrrrrrrrro",
+        "orrrrrrrrrrro",
+        ".orrrrrrrrro.",
+        "..orrrrrrro..",
+        "...orrrrro...",
+        "....orrro....",
+        ".....oro.....",
+        "......o......",
+      ];
+      const HEART_EMPTY = HEART_FULL.map((r) => r.replace(/[rw]/g, "e"));
+      const TROPHY = [
+        "...oooooooo...",
+        "oooollyyyyyooo",
+        "oyoolyyyyyyoyo",
+        "oyoolyyyyyyoyo",
+        ".ooolyyyyyyoo.",
+        "...olyyyyyyo..",
+        "....olyyyyo...",
+        ".....oyyyo....",
+        "......oyo.....",
+        "......oyo.....",
+        ".....oyyyo....",
+        "....ooooooo...",
+        "....oddddddo..",
+        "....ooooooo...",
+      ].map((r) => r.padEnd(14, "."));
+
+      const MAX_LIVES = 3;
+      function renderHearts(
+        el,
+        filled,
+        total = MAX_LIVES,
+        animateIndex = -1,
+        animClass = "fill-in",
+      ) {
+        el.innerHTML = "";
+        for (let i = 0; i < total; i++) {
+          el.insertAdjacentHTML(
+            "beforeend",
+            pixelSVG(
+              i < filled ? HEART_FULL : HEART_EMPTY,
+              "heart" + (i === animateIndex ? " " + animClass : ""),
+            ),
+          );
+        }
+      }
+      document.getElementById("trophy").innerHTML = pixelSVG(TROPHY, "trophy");
+
+      /* ---------- Games ---------- */
+      function puzzleGame({ image, cols, rows, seconds }) {
+        return (root, onWin, onLose) => {
+          const total = cols * rows;
+          let order = [...Array(total).keys()];
+          do {
+            order.sort(() => Math.random() - 0.5);
+          } while (order.every((v, i) => v === i));
+          let selected = null,
+            moves = 0,
+            left = seconds,
+            over = false;
+
+          root.innerHTML = `
+      <div class="puzzle-wrap">
+        <div class="puzzle-bar">
+          <span class="timer" id="pz-timer"></span>
+          <div class="hearts" id="pz-hearts"></div>
+          <span>Potezi: <b id="pz-moves">0</b></span>
+        </div>
+        <div class="board" id="pz-board" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr)">
+          <div class="preview" id="pz-preview" style="background-image:url('${image}')"></div>
+        </div>
+        <p class="hint">Klikni dva dela da ih zameniš</p>
+        <button class="btn ghost" id="pz-peek">Drži za sliku</button>
+      </div>`;
+          const board = root.querySelector("#pz-board");
+          // Match the board to the photo's proportions (portrait or landscape)
+          const probe = new Image();
+          probe.onload = () => {
+            const ratio = probe.naturalWidth / probe.naturalHeight;
+            board.style.aspectRatio = `${probe.naturalWidth} / ${probe.naturalHeight}`;
+            board.style.width = `min(100%, ${(60 * ratio).toFixed(1)}vh)`;
+          };
+          probe.src = image;
+          const movesEl = root.querySelector("#pz-moves");
+          const preview = root.querySelector("#pz-preview");
+          const timerEl = root.querySelector("#pz-timer");
+          renderHearts(root.querySelector("#pz-hearts"), lives);
+
+          const fmt = (s) =>
+            `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+          timerEl.textContent = fmt(left);
+          const tick = setInterval(() => {
+            left--;
+            timerEl.textContent = fmt(left);
+            timerEl.classList.toggle("low", left <= 15);
+            if (left <= 0) {
+              clearInterval(tick);
+              over = true;
+              board.classList.add("solved");
+              setTimeout(onLose, 600);
+            }
+          }, 1000);
+
+          function draw() {
+            board.querySelectorAll(".piece").forEach((p) => p.remove());
+            order.forEach((piece, slot) => {
+              const d = document.createElement("div");
+              d.className = "piece" + (slot === selected ? " selected" : "");
+              const px = piece % cols,
+                py = Math.floor(piece / cols);
+              d.style.backgroundImage = `url('${image}')`;
+              d.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+              d.style.backgroundPosition = `${cols > 1 ? (px / (cols - 1)) * 100 : 0}% ${rows > 1 ? (py / (rows - 1)) * 100 : 0}%`;
+              d.onclick = () => pick(slot);
+              board.insertBefore(d, preview);
+            });
+          }
+          function pick(slot) {
+            if (over) return;
+            if (selected === null) {
+              selected = slot;
+              draw();
+              return;
+            }
+            if (selected !== slot) {
+              [order[selected], order[slot]] = [order[slot], order[selected]];
+              movesEl.textContent = ++moves;
+            }
+            selected = null;
+            draw();
+            if (order.every((v, i) => v === i)) {
+              over = true;
+              clearInterval(tick);
+              timerEl.classList.remove("low");
+              board.classList.add("solved");
+              setTimeout(onWin, 1300);
+            }
+          }
+          const peek = root.querySelector("#pz-peek");
+          const show = (e) => {
+            e.preventDefault();
+            preview.classList.add("show");
+          };
+          const hide = () => preview.classList.remove("show");
+          peek.addEventListener("pointerdown", show);
+          ["pointerup", "pointerleave", "pointercancel"].forEach((ev) =>
+            peek.addEventListener(ev, hide),
+          );
+          draw();
+        };
+      }
+
+      // Shared countdown: returns a stop() function
+      function startTimer(el, seconds, onEnd) {
+        let left = seconds;
+        const fmt = (s) =>
+          `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+        el.textContent = fmt(left);
+        const tick = setInterval(() => {
+          left--;
+          el.textContent = fmt(left);
+          el.classList.toggle("low", left <= 15);
+          if (left <= 0) {
+            clearInterval(tick);
+            onEnd();
+          }
+        }, 1000);
+        return () => {
+          clearInterval(tick);
+          el.classList.remove("low");
+        };
+      }
+
+      // With `video`, the timer starts only when the video is first played
+      function quizGame({
+        image,
+        blur,
+        video,
+        text,
+        question,
+        answers,
+        correct,
+        seconds,
+      }) {
+        return (root, onWin, onLose) => {
+          root.innerHTML = `
+      <div class="quiz-wrap">
+        <div class="puzzle-bar">
+          <span class="timer" id="qz-timer"></span>
+          <div class="hearts" id="qz-hearts"></div>
+          <span style="min-width:70px"></span>
+        </div>
+        ${image && blur ? `<div class="blur-box"><img id="qz-blur" src="${image}" alt="" style="filter:blur(${blur}px)"></div>` : image ? `<img class="quiz-photo" src="${image}" alt="">` : ""}
+        ${video ? `<video class="quiz-video" src="${video}" controls playsinline preload="metadata"></video><p class="hint" id="qz-hint">Pusti video da krene vreme</p>` : ""}
+        ${text ? `<p class="quiz-text">${text}</p>` : ""}
+        <h2>${question}</h2>
+        <div class="answers">
+          ${answers.map((a, i) => `<button class="btn" data-i="${i}">${String.fromCharCode(97 + i)}) ${a}</button>`).join("")}
+        </div>
+      </div>`;
+          renderHearts(root.querySelector("#qz-hearts"), lives);
+          const buttons = [...root.querySelectorAll(".answers .btn")];
+          const timerEl = root.querySelector("#qz-timer");
+          const videoEl = root.querySelector("video");
+          const onTimeUp = () => {
+            buttons.forEach((b) => (b.disabled = true));
+            if (videoEl) videoEl.pause();
+            setTimeout(() => onLose("time"), 600);
+          };
+          let stop = () => {};
+          if (videoEl) {
+            timerEl.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+            videoEl.addEventListener(
+              "play",
+              () => {
+                if (buttons[0].disabled) return;
+                root.querySelector("#qz-hint").style.visibility = "hidden";
+                stop = startTimer(timerEl, seconds, onTimeUp);
+              },
+              { once: true },
+            );
+          } else {
+            stop = startTimer(timerEl, seconds, onTimeUp);
+          }
+          buttons.forEach((b) => {
+            b.onclick = () => {
+              stop();
+              if (videoEl) videoEl.pause();
+              const blurImg = root.querySelector("#qz-blur");
+              if (blurImg) blurImg.classList.add("clear");
+              buttons.forEach((x) => (x.disabled = true));
+              const i = +b.dataset.i;
+              if (i === correct) {
+                b.classList.add("right");
+                setTimeout(onWin, 1000);
+              } else {
+                b.classList.add("wrong");
+                setTimeout(() => onLose("wrong"), 1200);
+              }
+            };
+          });
+        };
+      }
+
+      function mazeGame({ player, goal, cols, rows, seconds }) {
+        return (root, onWin, onLose) => {
+          root.innerHTML = `
+      <div class="maze-wrap">
+        <div class="puzzle-bar">
+          <span class="timer" id="mz-timer"></span>
+          <div class="hearts" id="mz-hearts"></div>
+          <span style="min-width:70px"></span>
+        </div>
+        <canvas class="maze" id="mz-canvas"></canvas>
+        <div class="dpad">
+          <button class="btn" data-d="up">▲</button>
+          <button class="btn" data-d="left">◀</button>
+          <button class="btn" data-d="down">▼</button>
+          <button class="btn" data-d="right">▶</button>
+        </div>
+        <p class="hint">Strelice na tastaturi ili prevuci prstom po lavirintu</p>
+      </div>`;
+          renderHearts(root.querySelector("#mz-hearts"), lives);
+          const canvas = root.querySelector("#mz-canvas");
+          const ctx = canvas.getContext("2d");
+          const ac = new AbortController();
+          const signal = ac.signal;
+          let over = false;
+
+          // Walls per cell: [top, right, bottom, left]; carved with randomized DFS
+          const walls = Array.from({ length: cols * rows }, () => [1, 1, 1, 1]);
+          const DIRS = [
+            [0, -1],
+            [1, 0],
+            [0, 1],
+            [-1, 0],
+          ];
+          const seen = new Set([0]);
+          const stack = [0];
+          while (stack.length) {
+            const c = stack[stack.length - 1];
+            const cx = c % cols,
+              cy = Math.floor(c / cols);
+            const options = DIRS.map(([dx, dy], d) => [
+              cx + dx,
+              cy + dy,
+              d,
+            ]).filter(
+              ([x, y]) =>
+                x >= 0 &&
+                y >= 0 &&
+                x < cols &&
+                y < rows &&
+                !seen.has(y * cols + x),
+            );
+            if (!options.length) {
+              stack.pop();
+              continue;
+            }
+            const [nx, ny, d] =
+              options[Math.floor(Math.random() * options.length)];
+            const n = ny * cols + nx;
+            walls[c][d] = 0;
+            walls[n][(d + 2) % 4] = 0;
+            seen.add(n);
+            stack.push(n);
+          }
+
+          const pos = { x: 0, y: 0 };
+          const target = { x: cols - 1, y: rows - 1 };
+          const trail = new Set(["0,0"]);
+          const imgs = [player, goal].map((src) => {
+            const im = new Image();
+            im.onload = () => draw(over);
+            im.src = src;
+            return im;
+          });
+
+          function draw(won = false) {
+            const size = canvas.clientWidth;
+            if (!size) return;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = size * dpr;
+            canvas.height = size * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const cw = size / cols,
+              ch = size / rows;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, size, size);
+
+            ctx.fillStyle = "#ff8ab8";
+            ctx.font = `${Math.floor(cw * 0.35)}px sans-serif`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            trail.forEach((k) => {
+              const [x, y] = k.split(",").map(Number);
+              ctx.fillText("♥", (x + 0.5) * cw, (y + 0.5) * ch);
+            });
+
+            ctx.strokeStyle = "#1c1c1c";
+            ctx.lineWidth = 3;
+            ctx.lineCap = "square";
+            ctx.beginPath();
+            walls.forEach((w, i) => {
+              const x = (i % cols) * cw,
+                y = Math.floor(i / cols) * ch;
+              if (w[0]) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + cw, y);
+              }
+              if (w[1]) {
+                ctx.moveTo(x + cw, y);
+                ctx.lineTo(x + cw, y + ch);
+              }
+              if (w[2]) {
+                ctx.moveTo(x, y + ch);
+                ctx.lineTo(x + cw, y + ch);
+              }
+              if (w[3]) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y + ch);
+              }
+            });
+            ctx.stroke();
+
+            const put = (im, x, y, scale) => {
+              if (!im.complete || !im.naturalWidth) return;
+              const w = cw * scale,
+                h = ch * scale;
+              ctx.drawImage(
+                im,
+                (x + 0.5) * cw - w / 2,
+                (y + 0.5) * ch - h / 2,
+                w,
+                h,
+              );
+            };
+            if (won) {
+              // Both meet at the goal, with a kiss above them
+              put(imgs[1], target.x - 0.35, target.y - 0.2, 1.7);
+              put(imgs[0], target.x - 1.15, target.y - 0.2, 1.7);
+              ctx.font = `${Math.floor(cw * 1.1)}px sans-serif`;
+              ctx.fillText("💋", (target.x - 0.25) * cw, (target.y - 0.9) * ch);
+            } else {
+              put(imgs[1], target.x, target.y, 1.2);
+              put(imgs[0], pos.x, pos.y, 1.2);
+            }
+          }
+
+          function finish(win) {
+            if (over) return;
+            over = true;
+            stop();
+            ac.abort();
+            if (win) {
+              draw(true);
+              burst(15);
+              setTimeout(onWin, 1800);
+            } else setTimeout(() => onLose("time"), 600);
+          }
+
+          function move(d) {
+            if (over) return;
+            const i = pos.y * cols + pos.x;
+            if (walls[i][d]) return;
+            pos.x += DIRS[d][0];
+            pos.y += DIRS[d][1];
+            trail.add(`${pos.x},${pos.y}`);
+            draw();
+            if (pos.x === target.x && pos.y === target.y) finish(true);
+          }
+
+          const KEYS = {
+            ArrowUp: 0,
+            w: 0,
+            W: 0,
+            ArrowRight: 1,
+            d: 1,
+            D: 1,
+            ArrowDown: 2,
+            s: 2,
+            S: 2,
+            ArrowLeft: 3,
+            a: 3,
+            A: 3,
+          };
+          window.addEventListener(
+            "keydown",
+            (e) => {
+              if (e.key in KEYS) {
+                e.preventDefault();
+                move(KEYS[e.key]);
+              }
+            },
+            { signal },
+          );
+          const D = { up: 0, right: 1, down: 2, left: 3 };
+          root.querySelectorAll(".dpad .btn").forEach((b) =>
+            b.addEventListener("click", () => move(D[b.dataset.d]), {
+              signal,
+            }),
+          );
+
+          // Swipe: every cell-width of drag moves one step
+          let last = null;
+          canvas.addEventListener(
+            "pointerdown",
+            (e) => {
+              last = { x: e.clientX, y: e.clientY };
+              canvas.setPointerCapture(e.pointerId);
+            },
+            { signal },
+          );
+          canvas.addEventListener(
+            "pointermove",
+            (e) => {
+              if (!last) return;
+              const step = canvas.clientWidth / cols;
+              const dx = e.clientX - last.x,
+                dy = e.clientY - last.y;
+              if (Math.max(Math.abs(dx), Math.abs(dy)) < step) return;
+              if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 1 : 3);
+              else move(dy > 0 ? 2 : 0);
+              last = { x: e.clientX, y: e.clientY };
+            },
+            { signal },
+          );
+          ["pointerup", "pointercancel"].forEach((ev) =>
+            canvas.addEventListener(ev, () => (last = null), { signal }),
+          );
+          window.addEventListener("resize", () => draw(), { signal });
+
+          const stop = startTimer(
+            root.querySelector("#mz-timer"),
+            seconds,
+            () => finish(false),
+          );
+          requestAnimationFrame(() => draw());
+        };
+      }
+
+      // Hearts fall, a basket catches them; every `perImage` catches swaps the side image
+      function catchGame({ images, perImage, seconds, maxMisses }) {
+        return (root, onWin, onLose) => {
+          root.innerHTML = `
+      <div class="catch-wrap">
+        <div class="puzzle-bar">
+          <span class="timer" id="ct-timer"></span>
+          <div class="hearts" id="ct-hearts"></div>
+          <span class="catch-count" id="ct-count"></span>
+        </div>
+        <div class="catch-row">
+          <canvas class="catch-field" id="ct-canvas"></canvas>
+          <div class="catch-side"><img id="ct-img" src="${images[0]}" alt=""><span class="catch-miss" id="ct-miss"></span></div>
+        </div>
+        <p class="hint">Pomeraj korpicu mišem, prstom ili strelicama</p>
+      </div>`;
+          images.slice(1).forEach((src) => (new Image().src = src));
+          renderHearts(root.querySelector("#ct-hearts"), lives);
+          const canvas = root.querySelector("#ct-canvas");
+          const ctx = canvas.getContext("2d");
+          const sideImg = root.querySelector("#ct-img");
+          const countEl = root.querySelector("#ct-count");
+          const ac = new AbortController();
+          const signal = ac.signal;
+          const goal = perImage * (images.length - 1);
+          const missEl = root.querySelector("#ct-miss");
+          let caught = 0,
+            misses = 0,
+            over = false,
+            raf = 0;
+
+          // Pixel heart sprite, reused for every falling heart
+          const sprite = document.createElement("canvas");
+          sprite.width = HEART_FULL[0].length;
+          sprite.height = HEART_FULL.length;
+          const sctx = sprite.getContext("2d");
+          HEART_FULL.forEach((row, y) =>
+            [...row].forEach((c, x) => {
+              if (!PALETTE[c]) return;
+              sctx.fillStyle = PALETTE[c];
+              sctx.fillRect(x, y, 1, 1);
+            }),
+          );
+
+          let W = 0,
+            H = 0;
+          function resize() {
+            const dpr = window.devicePixelRatio || 1;
+            W = canvas.clientWidth;
+            H = canvas.clientHeight;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.imageSmoothingEnabled = false;
+          }
+          resize();
+
+          const basket = { x: W / 2, vx: 0 };
+          const bw = () => W * 0.26;
+          const bh = () => W * 0.12;
+          const hs = () => W * 0.1;
+          let drops = [],
+            spawnIn = 0,
+            last = performance.now();
+
+          function updateCount() {
+            countEl.innerHTML = `<b>${caught % perImage === 0 && caught ? perImage : caught % perImage}</b>/${perImage}`;
+          }
+          updateCount();
+          const updateMisses = () =>
+            (missEl.innerHTML = `Promašeno: <b>${misses}</b>/${maxMisses}`);
+          updateMisses();
+
+          function drawBasket() {
+            const w = bw(),
+              h = bh(),
+              x = basket.x - w / 2,
+              y = H - h - 6;
+            ctx.fillStyle = "#b5733a";
+            ctx.strokeStyle = "#1c1c1c";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + w, y);
+            ctx.lineTo(x + w * 0.88, y + h);
+            ctx.lineTo(x + w * 0.12, y + h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = "#7a4a1f";
+            ctx.lineWidth = 2;
+            for (let i = 1; i < 3; i++) {
+              ctx.beginPath();
+              ctx.moveTo(x + w * 0.04 * i, y + (h / 3) * i);
+              ctx.lineTo(x + w - w * 0.04 * i, y + (h / 3) * i);
+              ctx.stroke();
+            }
+            ctx.fillStyle = "#ff3d8b";
+            ctx.fillRect(x - 3, y - 6, w + 6, 6);
+          }
+
+          function frame(now) {
+            const dt = Math.min((now - last) / 1000, 0.05);
+            last = now;
+            if (!W) resize();
+
+            basket.x = Math.max(
+              bw() / 2,
+              Math.min(W - bw() / 2, basket.x + basket.vx * dt),
+            );
+
+            spawnIn -= dt;
+            if (spawnIn <= 0) {
+              spawnIn = 0.55 + Math.random() * 0.45;
+              drops.push({
+                x: hs() / 2 + Math.random() * (W - hs()),
+                y: -hs(),
+                v: H * (0.35 + Math.random() * 0.25 + caught * 0.02),
+              });
+            }
+
+            const topY = H - bh() - 6;
+            drops.forEach((d) => (d.y += d.v * dt));
+            drops = drops.filter((d) => {
+              const bottom = d.y + hs() / 2;
+              if (
+                bottom >= topY &&
+                bottom <= topY + bh() &&
+                Math.abs(d.x - basket.x) < bw() / 2
+              ) {
+                catchOne();
+                return false;
+              }
+              if (d.y - hs() < H) return true;
+              if (!over) {
+                misses++;
+                updateMisses();
+                missEl.classList.remove("hit");
+                void missEl.offsetWidth;
+                missEl.classList.add("hit");
+                if (misses >= maxMisses) finish(false, "miss");
+              }
+              return false;
+            });
+
+            ctx.clearRect(0, 0, W, H);
+            drops.forEach((d) => {
+              const size = hs();
+              ctx.drawImage(
+                sprite,
+                d.x - size / 2,
+                d.y - size / 2,
+                size,
+                (size * sprite.height) / sprite.width,
+              );
+            });
+            drawBasket();
+            if (!over) raf = requestAnimationFrame(frame);
+          }
+
+          function catchOne() {
+            if (over) return;
+            caught++;
+            updateCount();
+            if (caught % perImage === 0) {
+              const idx = caught / perImage;
+              sideImg.src = images[idx];
+              sideImg.classList.remove("swap");
+              void sideImg.offsetWidth;
+              sideImg.classList.add("swap");
+              burst(8);
+              if (caught >= goal) finish(true);
+              else
+                setTimeout(
+                  () => !over && (countEl.innerHTML = `<b>0</b>/${perImage}`),
+                  700,
+                );
+            }
+          }
+
+          function finish(win, reason = "time") {
+            if (over) return;
+            over = true;
+            stop();
+            ac.abort();
+            cancelAnimationFrame(raf);
+            if (win) setTimeout(onWin, 2000);
+            else setTimeout(() => onLose(reason), 600);
+          }
+
+          canvas.addEventListener(
+            "pointermove",
+            (e) => {
+              const r = canvas.getBoundingClientRect();
+              basket.x = e.clientX - r.left;
+            },
+            { signal },
+          );
+          canvas.addEventListener(
+            "pointerdown",
+            (e) => {
+              canvas.setPointerCapture(e.pointerId);
+              const r = canvas.getBoundingClientRect();
+              basket.x = e.clientX - r.left;
+            },
+            { signal },
+          );
+          const held = new Set();
+          const speed = () => W * 1.4;
+          const syncKeys = () =>
+            (basket.vx =
+              (held.has(1) ? speed() : 0) - (held.has(-1) ? speed() : 0));
+          const KEY_DIR = {
+            ArrowLeft: -1,
+            a: -1,
+            A: -1,
+            ArrowRight: 1,
+            d: 1,
+            D: 1,
+          };
+          window.addEventListener(
+            "keydown",
+            (e) => {
+              if (!(e.key in KEY_DIR)) return;
+              e.preventDefault();
+              held.add(KEY_DIR[e.key]);
+              syncKeys();
+            },
+            { signal },
+          );
+          window.addEventListener(
+            "keyup",
+            (e) => {
+              if (!(e.key in KEY_DIR)) return;
+              held.delete(KEY_DIR[e.key]);
+              syncKeys();
+            },
+            { signal },
+          );
+          window.addEventListener("resize", resize, { signal });
+
+          const stop = startTimer(
+            root.querySelector("#ct-timer"),
+            seconds,
+            () => finish(false),
+          );
+          raf = requestAnimationFrame(frame);
+        };
+      }
+
+      // Classic pairs game: flip two cards, matching pairs stay open
+      function memoryGame({ images, seconds }) {
+        return (root, onWin, onLose) => {
+          const deck = [...images, ...images]
+            .map((src) => ({ src, r: Math.random() }))
+            .sort((a, b) => a.r - b.r)
+            .map((c) => c.src);
+          const back = pixelSVG(HEART_FULL, "");
+          root.innerHTML = `
+      <div class="memory-wrap">
+        <div class="puzzle-bar">
+          <span class="timer" id="mm-timer"></span>
+          <div class="hearts" id="mm-hearts"></div>
+          <span>Parovi: <b id="mm-pairs">0</b>/${images.length}</span>
+        </div>
+        <div class="memory-grid">
+          ${deck
+            .map(
+              (src, i) => `
+            <div class="card" data-i="${i}">
+              <div class="card-inner">
+                <div class="card-face card-back">${back}</div>
+                <div class="card-face card-front"><img src="${src}" alt="" draggable="false"></div>
+              </div>
+            </div>`,
+            )
+            .join("")}
+        </div>
+        <p class="hint">Otvori dve kartice i pronađi iste slike</p>
+      </div>`;
+          renderHearts(root.querySelector("#mm-hearts"), lives);
+          const cards = [...root.querySelectorAll(".card")];
+          const pairsEl = root.querySelector("#mm-pairs");
+          let first = null,
+            busy = false,
+            pairs = 0,
+            over = false;
+
+          const stop = startTimer(
+            root.querySelector("#mm-timer"),
+            seconds,
+            () => {
+              over = true;
+              setTimeout(() => onLose("time"), 600);
+            },
+          );
+
+          cards.forEach((card) => {
+            card.onclick = () => {
+              if (over || busy || card.classList.contains("open")) return;
+              card.classList.add("open");
+              if (!first) {
+                first = card;
+                return;
+              }
+              const a = first,
+                b = card;
+              first = null;
+              if (deck[a.dataset.i] === deck[b.dataset.i]) {
+                a.classList.add("matched");
+                b.classList.add("matched");
+                pairsEl.textContent = ++pairs;
+                if (pairs === images.length) {
+                  over = true;
+                  stop();
+                  burst(15);
+                  setTimeout(onWin, 1300);
+                }
+              } else {
+                busy = true;
+                setTimeout(() => {
+                  a.classList.remove("open");
+                  b.classList.remove("open");
+                  busy = false;
+                }, 900);
+              }
+            };
+          });
+        };
+      }
+
+      /* ---------- Levels (add new games here) ---------- */
+      const LEVELS = [
+        {
+          title: "Nivo 1: Puzla",
+          intro: "Složi našu sliku sa plaže.",
+          done: "Nivo 1 završen. 10 poljubaca za Kicu.",
+          game: puzzleGame({
+            image: "puzla-1.jpeg",
+            cols: 4,
+            rows: 3,
+            seconds: 90,
+          }),
+        },
+        {
+          title: "Nivo 2: Pitanje",
+          intro: "Naše prvooo moree, da li se sećaš kad je nastala naša slika?",
+          done: "Nivo 2 završen. Mozda i najlepse hahahahah",
+          game: quizGame({
+            image: "puzla-1.jpeg",
+            question: "Kog datuma je slika nastala?",
+            answers: [
+              "10. septembar 2021",
+              "5. jul 2021",
+              "10. septembar 2022",
+            ],
+            correct: 0,
+            seconds: 45,
+          }),
+        },
+        {
+          title: "Nivo 3: Video",
+          intro: "Pogledaj pažljivo. Vreme kreće kad pustiš video.",
+          done: "Nivo 3 završen. Bravooo Lepkoo kidas ga! ",
+          game: quizGame({
+            video: "video-1.mp4",
+            text: "Iz nekog razloga ovaj video mi je omiljeni. Preslatkoooo!",
+            question: "Iz kog pokušaja Kica pogađa trojku?",
+            answers: ["3", "2", "1"],
+            correct: 1,
+            seconds: 60,
+          }),
+        },
+        {
+          title: "Nivo 4: Pogodi događaj",
+          intro: "Slika je malo mutna... Da li znaš gde smo bili?",
+          done: "Nivo 4 završen. Koliko si hot na ovoj svadbi! 🔥",
+          game: quizGame({
+            image: "blur-1.jpeg",
+            blur: 7,
+            question: "Pogodi događaj",
+            answers: ["5 godina mature", "Mickova svadba", "Icina svadba"],
+            correct: 2,
+            seconds: 45,
+          }),
+        },
+        {
+          title: "Nivo 5: Lavirint",
+          intro: "Pomozi Kici da poljubi Kicu.",
+          done: "Nivo 5 završen. Poljubac je stigao na odredište 💋",
+          game: mazeGame({
+            player: "kica.png",
+            goal: "dara.png",
+            cols: 9,
+            rows: 9,
+            seconds: 60,
+          }),
+        },
+        {
+          title: "Nivo 6: Skini Kicu",
+          intro: "Hvataj srca u korpicu. Na svakih 5 srca... videćeš 😏",
+          done: "Nivo 6 završen. Ijuu bezobrazniceeee",
+          game: catchGame({
+            images: ["img1.png", "img2.png", "img3.png"],
+            perImage: 5,
+            seconds: 60,
+            maxMisses: 4,
+          }),
+        },
+        {
+          title: "Nivo 7: Puzla 2",
+          intro: "Još jedna puzla. Ova je malo drugačija...",
+          done: "Nivo 7 završen. Kakoo smoo slatkii breeee",
+          game: puzzleGame({
+            image: "puzla-2.jpeg",
+            cols: 3,
+            rows: 4,
+            seconds: 90,
+          }),
+        },
+        {
+          title: "Nivo 8: Pitanje",
+          intro: "Da li se sećaš gde smo bili na ovoj slici?",
+          done: "Nivo 8 završen. Sve pamtiš!",
+          game: quizGame({
+            image: "puzla-2.jpeg",
+            question: "Koje godine i gde je slika uslikana?",
+            answers: ["Bela Crkva 2023", "Ohrid 2024", "Bela Crkva 2022"],
+            correct: 2,
+            seconds: 45,
+          }),
+        },
+        {
+          title: "Nivo 9: Memorija",
+          intro: "Pronađi parove istih slika.",
+          done: "Nivo 9 završen. Bravo lepokoo!",
+          game: memoryGame({
+            images: [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `2same/card${n}.jpeg`),
+            seconds: 90,
+          }),
+        },
+      ];
+
+      /* ---------- Flow ---------- */
+      const KISSES_PER_LEVEL = 10;
+      let level = 0,
+        lives = MAX_LIVES,
+        kisses = 0;
+      const kissText = () => `Ukupno: <b>${kisses}</b> poljubaca`;
+      const $ = (id) => document.getElementById(id);
+      function show(id) {
+        document
+          .querySelectorAll(".view")
+          .forEach((v) => v.classList.remove("active"));
+        $(id).classList.add("active");
+      }
+      function startLevel() {
+        const L = LEVELS[level];
+        renderHearts($("intro-hearts"), lives);
+        $("intro-title").textContent = L.title;
+        $("intro-text").textContent = L.intro;
+        show("v-intro");
+      }
+      $("btn-start").onclick = () => {
+        level = 0;
+        lives = MAX_LIVES;
+        kisses = 0;
+        startLevel();
+      };
+      $("btn-play").onclick = () => {
+        show("v-game");
+        LEVELS[level].game(
+          $("game-root"),
+          () => {
+            kisses += KISSES_PER_LEVEL;
+            $("done-kisses").innerHTML = kissText();
+            renderHearts($("done-hearts"), lives);
+            $("done-title").textContent = LEVELS[level].done;
+            const last = level === LEVELS.length - 1;
+            $("btn-next").textContent = last
+              ? "Nastavi"
+              : "Otključaj sledeći nivo";
+            show("v-done");
+            burst();
+          },
+          (reason = "time") => {
+            lives--;
+            renderHearts($("lose-hearts"), lives, MAX_LIVES, lives, "lose");
+            if (lives > 0) {
+              $("lose-title").textContent = {
+                wrong: "Pogrešan odgovor!",
+                miss: "Promašila si 4 srca!",
+                time: "Vreme je isteklo!",
+              }[reason];
+              $("lose-text").textContent =
+                `Izgubila si jedno srce. Ostalo ti je još ${lives}.`;
+              $("btn-retry").textContent = "Pokušaj ponovo";
+            } else {
+              $("lose-title").textContent = "Game over";
+              $("lose-text").textContent =
+                "Nema više srca... ali dobijaš novu šansu.";
+              $("btn-retry").textContent = "Počni ispočetka";
+            }
+            show("v-lose");
+          },
+        );
+      };
+      $("btn-retry").onclick = () => {
+        if (lives > 0) startLevel();
+        else show("v-start");
+      };
+      $("btn-next").onclick = () => {
+        level++;
+        if (level < LEVELS.length) startLevel();
+        else {
+          renderHearts($("final-hearts"), lives);
+          $("final-kisses").innerHTML = kissText();
+          show("v-final");
+        }
+      };
+      /* ---------- Final slideshow ---------- */
+      const SLIDES = [
+        "puzla-1.jpeg",
+        "puzla-2.jpeg",
+        "blur-1.jpeg",
+        ...[1, 2, 3, 4, 5, 6, 7, 8].map((n) => `2same/card${n}.jpeg`),
+        "kica.png",
+        "dara.png",
+      ];
+      const slideEls = SLIDES.map((src) => {
+        const im = document.createElement("img");
+        im.src = src;
+        im.alt = "";
+        $("slideshow").appendChild(im);
+        return im;
+      });
+      let slide = 0,
+        slideTimer = 0;
+      function startSlideshow() {
+        clearInterval(slideTimer);
+        slideEls.forEach((im) => im.classList.remove("active"));
+        slide = 0;
+        slideEls[0].classList.add("active");
+        slideTimer = setInterval(() => {
+          slideEls[slide].classList.remove("active");
+          slide = (slide + 1) % slideEls.length;
+          slideEls[slide].classList.add("active");
+        }, 3000);
+      }
+
+      /* ---------- Runaway "claim" button ---------- */
+      const runaway = $("btn-runaway");
+      const TEASES = [
+        "Ne može tako lako 😜",
+        "Skoro si ga uhvatila!",
+        "Hehe, promašila si",
+        "Možda probaj negde drugde... 👀",
+        "Ovo dugme je stidljivo",
+        "Pogledaj malo bolje po ekranu 😏",
+      ];
+      let flees = 0;
+      function flee() {
+        const r = runaway.getBoundingClientRect();
+        if (!runaway.classList.contains("fleeing")) {
+          runaway.style.left = r.left + "px";
+          runaway.style.top = r.top + "px";
+          runaway.classList.add("fleeing");
+        }
+        const maxX = window.innerWidth - r.width - 10;
+        const maxY = window.innerHeight - r.height - 10;
+        let x, y;
+        do {
+          x = 10 + Math.random() * (maxX - 10);
+          y = 10 + Math.random() * (maxY - 10);
+        } while (Math.hypot(x - r.left, y - r.top) < 150 && maxX > 300);
+        requestAnimationFrame(() => {
+          runaway.style.left = x + "px";
+          runaway.style.top = y + "px";
+        });
+        $("runaway-hint").textContent = TEASES[flees++ % TEASES.length];
+      }
+      // Flee when the pointer gets close, before it can click
+      document.addEventListener("pointermove", (e) => {
+        if (!$("v-prize").classList.contains("active")) return;
+        if (runaway.style.display === "none") return;
+        const r = runaway.getBoundingClientRect();
+        const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+        const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+        if (Math.hypot(dx, dy) < 60) flee();
+      });
+      runaway.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        flee();
+      });
+      runaway.addEventListener("click", (e) => {
+        e.preventDefault();
+        flee();
+      });
+      function resetRunaway() {
+        runaway.classList.remove("fleeing");
+        runaway.style.left = runaway.style.top = "";
+        runaway.style.display = "";
+        $("runaway-hint").innerHTML = "&nbsp;";
+        flees = 0;
+      }
+
+      $("btn-sneaky").onclick = () => {
+        runaway.style.display = "none";
+        $("btn-sneaky").classList.remove("show");
+        const o = document.createElement("div");
+        o.className = "claimed";
+        o.innerHTML = `
+          <div class="big">💋</div>
+          <h1>Uhvatila si ga!</h1>
+          <p class="small">${kisses} poljubaca je tvoje. Isplata odmah, uživo 😘</p>
+          <button class="btn">Zatvori</button>`;
+        o.querySelector("button").onclick = () => o.remove();
+        document.body.appendChild(o);
+        burst(60);
+      };
+
+      $("btn-prize").onclick = () => {
+        $("prize-text").textContent =
+          `Osvojila si ${kisses} poljubaca. Vreme je da ih naplatiš 💋`;
+        resetRunaway();
+        $("btn-sneaky").classList.add("show");
+        show("v-prize");
+        startSlideshow();
+        burst(40);
+      };
+      $("btn-restart").onclick = () => {
+        clearInterval(slideTimer);
+        resetRunaway();
+        $("btn-sneaky").classList.remove("show");
+        show("v-start");
+      };
+
+      /* ---------- Floating hearts ---------- */
+      function floaty() {
+        const h = document.createElement("div");
+        h.className = "floaty";
+        h.textContent = "♥";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = 14 + Math.random() * 22 + "px";
+        h.style.animationDuration = 6 + Math.random() * 6 + "s";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 13000);
+      }
+      function burst(n = 20) {
+        for (let i = 0; i < n; i++) setTimeout(floaty, i * 60);
+      }
+      setInterval(floaty, 1400);
+    </script>
+  </body>
+</html>
